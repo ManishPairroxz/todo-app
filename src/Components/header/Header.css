@@ -1,0 +1,35 @@
+.profile-button {
+    background-color: initial !important;
+    border: initial !important;
+}
+
+.profile-button:hover   {
+    background-color: initial !important;
+    border: initial !important;
+    cursor: pointer !important;
+}
+
+.dropdown-toggle    {
+    background-color: initial !important;
+    border: initial !important;
+}
+
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+.dropdown-menu  {
+    min-width: 6rem !important;
+    /* left: -121% !important; */
+}
+
+.my-profile-button  {
+    text-decoration: none !important;
+}
+
+.profile-picture {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 50%;
+}

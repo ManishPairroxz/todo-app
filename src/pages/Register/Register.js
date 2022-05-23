@@ -4,17 +4,14 @@ import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import useForm from '../../Hooks/useForm';
 import validate from '../../Others/RegisterFormValidation';
-import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '../../Others/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../Others/firebase';
 import { useHistory } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 function Register() {
     const history = useHistory();
-    const [user, setUser]   =   useState(null);
-
-
 
     const {
         values,
@@ -25,16 +22,12 @@ function Register() {
 
     async function register() {
          
-
-
         try {
             const result = await createUserWithEmailAndPassword(
                 auth,
                 values.email,
                 values.password
-            );
-
-             
+            );             
 
             axios.post('https://todo-react-91a88-default-rtdb.firebaseio.com/users.json', {
                 name : values.name,

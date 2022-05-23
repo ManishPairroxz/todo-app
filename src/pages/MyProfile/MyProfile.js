@@ -4,9 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import useForm from "../../Hooks/useForm";
 import validate from '../../Others/ProfileFormValidation';
-import { useHistory } from "react-router-dom";
 import axios from 'axios';
-import { useEffect } from 'react';
 
 
 function MyProfile() {
@@ -17,18 +15,11 @@ function MyProfile() {
         handleSubmit,
     } = useForm(profileSubmit, validate);
 
-    const history = useHistory();
     let userDetails = JSON.parse(localStorage.getItem('userDetails'));
-    console.log(userDetails);
-    console.log(userDetails.email);
 
     const email = `${'"' + userDetails.email + '"'}`;
 
     function profileSubmit() {
-        console.log('profileSUbmitted');
-
-
-        console.log(email);
 
         axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/users.json?orderBy="email"&equalTo=' + email).then((res) => {
             let data = Object.entries(res.data);

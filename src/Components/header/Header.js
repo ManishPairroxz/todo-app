@@ -1,12 +1,8 @@
 import './Header.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Button from 'react-bootstrap/Button';
 import { useEffect, useState } from 'react';
 import  {   useHistory  }   from    'react-router-dom';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown'
 import { Link } from 'react-router-dom';
 
@@ -20,8 +16,7 @@ function Header(props) {
     useEffect(() => {
         if (user) {
             setIsLoggedIn(true);
-            console.log(parsedData.profile_picture);
-            setProfilePicture(parsedData.profile_picture);
+            setProfilePicture(parsedData['profile_picture']);
         } else {
             setIsLoggedIn(false);
         }
@@ -38,7 +33,7 @@ function Header(props) {
         <div>
             <Navbar bg="light">
                 <Container>
-                    <Navbar.Brand>Welcome {parsedData ? parsedData.name : ''}</Navbar.Brand>
+                    <Navbar.Brand>Welcome {parsedData ? parsedData['name'] : ''}</Navbar.Brand>
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end">
                         <Navbar.Text>
@@ -48,7 +43,7 @@ function Header(props) {
                                     <Dropdown>
                                         <Dropdown.Toggle variant="success" id="dropdown-basic">
                                             <div>
-                                                <img className='profile-picture' src={profilePicture ? profilePicture : ''} />
+                                                <img alt='profile-picture' className='profile-picture' src={profilePicture ? profilePicture : ''} />
                                             </div>
                                         </Dropdown.Toggle>
 

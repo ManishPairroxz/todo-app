@@ -1,4 +1,3 @@
-import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import Header from '../../Components/header/Header';
 import './Tasks.css';
@@ -24,44 +23,24 @@ function Tasks() {
     const [dueDate, setDueDate] = useState(null);
     const [tasks, setTasks] = useState([]);
 
-
-
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
     useEffect(() => {
-        console.log('useEddect tasks');
-        console.log(date);
-        console.log(new Date());
-        console.log(new Date(moment(new Date()).add('5', 'd')));
         getTasks();
-
     }, []);
 
     function getTasks() {
         console.log('tasks');
         axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/tasks.json').then((res) => {
-            console.log(res);
-            console.log(res.data);
-
             const result = Object.entries(res.data);
             const resultData = [];
 
             result.forEach((element) => {
-                console.log(element[1]);
                 resultData.push(element[1]);
             });
-
-            console.log(resultData);
-
             setTasks(resultData);
-
-            console.log(tasks);
-            // res.data.forEach((element, key)  =>   {
-            //     console.log(element[key]);
-            // })
         }).catch((error) => {
             console.log(error);
         });

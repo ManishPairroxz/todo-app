@@ -1,8 +1,5 @@
 export default function validate(values) {
     let errors = {};
-    
-    console.log(values);
-    console.log(/([a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif))/i.test(values.image))
 
     if (!values.title) {
         errors.title = 'Title is required';

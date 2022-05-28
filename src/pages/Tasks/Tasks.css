@@ -6,3 +6,10 @@
     width: -webkit-fill-available;
     height: -webkit-fill-available;
 }
+
+.error {
+    text-align: left;
+    font-size: inherit;
+    font-weight: 400;
+    color: red;
+}

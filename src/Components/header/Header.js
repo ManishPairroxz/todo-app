@@ -43,7 +43,7 @@ function Header(props) {
                                     <Dropdown>
                                         <Dropdown.Toggle variant="success" id="dropdown-basic">
                                             <div>
-                                                <img alt='profile-picture' className='profile-picture' src={profilePicture ? profilePicture : ''} />
+                                                <img alt='profile-picture' className='profile-picture' src={profilePicture  ? profilePicture : '/user-32by32.png'} onError={(event) => {console.log('erro image event',event); event.target.src = 'https://www.nicomatic.com/themes/custom/jango_sub/img/no-image.png'}} />
                                             </div>
                                         </Dropdown.Toggle>
 

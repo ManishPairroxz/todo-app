@@ -22,18 +22,24 @@ function Tasks() {
     const [startDate, setStartDate] = useState(null);
     const [dueDate, setDueDate] = useState(null);
     const [tasks, setTasks] = useState([]);
-
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
 
     useEffect(() => {
-        getTasks();
+        setTimeout(() => {
+            getTasks();
+        }, 500);
     }, []);
 
     function getTasks() {
-        console.log('tasks');
-        axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/tasks.json').then((res) => {
+          
+        let userDetails = JSON.parse(localStorage.getItem('userDetails')); 
+        console.log(userDetails);
+
+        let userId = `${ '"' + userDetails._id + '"' }`;
+        console.log(userId);
+          
+        axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/tasks.json?orderBy="userId"&equalTo=' + userDetails._id).then((res) => {
             const result = Object.entries(res.data);
             const resultData = [];
 
@@ -42,13 +48,11 @@ function Tasks() {
             });
             setTasks(resultData);
         }).catch((error) => {
-            console.log(error);
+              
         });
     }
 
-    function handleDateChange(date, event) {
-        console.log('handleDateChange');
-        console.log(event);
+    function handleDateChange(date, event) { 
 
         const newEvent = {
             target: {
@@ -57,12 +61,8 @@ function Tasks() {
             }
         }
         handleChange(newEvent);
-
-        console.log(date);
-
         setStartDate(date);
         setDate(date);
-
     }
 
     function handleDueDateChange(date, event) {
@@ -73,27 +73,29 @@ function Tasks() {
             }
         }
         handleChange(newEvent);
-
         setDueDate(date);
     }
 
     function taskSubmit(e) {
-        // e.preventDefault();
-        console.log('handleSubmit');
-        console.log(values);
+        // e.preventDefault(); 
+        let result = localStorage.getItem('userDetails');
+        let userDetails = JSON.parse(result); 
+        console.log(userDetails);
+        console.log(userDetails._id);
 
         axios.post('https://todo-react-91a88-default-rtdb.firebaseio.com/tasks.json', {
             title: values.title,
             description: values.description,
             priority: values.priority,
             startDate: values.startDate,
-            dueDate: values.dueDate
+            dueDate: values.dueDate,
+            userId : userDetails._id
         }).then((res) => {
             alert('Task has been added successfully.');
             window.location.reload();
             getTasks();
         }).catch((error) => {
-            console.log(error);
+              
         });
     }
 
@@ -116,7 +118,7 @@ function Tasks() {
 
                 <tbody>
                     {
-                        // console.log('tasks', tasks)
+                        //   
                         tasks.map((element) => {
                             return(
                             <tr>
@@ -145,7 +147,7 @@ function Tasks() {
                         </Form.Group>
 
                         {
-                            errors.title && <h3>{errors.title}</h3>
+                            errors.title && <h3 className='error'>{errors.title}</h3>
                         }
 
                         <Form.Group className="mb-3" controlId="formBasicDescription">
@@ -154,7 +156,7 @@ function Tasks() {
                         </Form.Group>
 
                         {
-                            errors.description && <h3>{errors.description}</h3>
+                            errors.description && <h3 className='error'>{errors.description}</h3>
                         }
 
                         <Form.Group className="mb-3" controlId="formBasicPriority">
@@ -167,7 +169,7 @@ function Tasks() {
                         </Form.Group>
 
                         {
-                            errors.priority && <h3>{errors.priority}</h3>
+                            errors.priority && <h3 className='error'>{errors.priority}</h3>
                         }
 
                         <Form.Group className="mb-3" controlId="formBasicDatepicker">
@@ -186,7 +188,7 @@ function Tasks() {
                         </Form.Group>
 
                         {
-                            errors.startDate && <h3>{errors.startDate}</h3>
+                            errors.startDate && <h3 className='error'>{errors.startDate}</h3>
                         }
 
                         <Form.Group className='mb-3' controlId="formBasicDueDatePicker">
@@ -203,7 +205,7 @@ function Tasks() {
                         </Form.Group>
 
                         {
-                            errors.dueDate && <h3>{errors.dueDate}</h3>
+                            errors.dueDate && <h3 className='error'>{errors.dueDate}</h3>
                         }
 
 

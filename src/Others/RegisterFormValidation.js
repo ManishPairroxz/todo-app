@@ -1,6 +1,6 @@
 export default function validate(values) {
     let errors = {};
-     console.log(values);
+       
 
     if(!values.name)    {
         errors.name =   'Name is required.';

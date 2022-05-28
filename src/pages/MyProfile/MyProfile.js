@@ -23,53 +23,37 @@ function MyProfile() {
 
         axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/users.json?orderBy="email"&equalTo=' + email).then((res) => {
             let data = Object.entries(res.data);
-
-            console.log(data);
-
+            let userData = localStorage.getItem('userDetails');
+            let parsedData = JSON.parse(userData);
             // User Id
-            console.log(data[0]);
+            console.log(parsedData['_id']);
+            console.log(userData[0][1]);
 
-            let userId = data[0][0];
-            console.log(userId);
 
             // Update based on the ID
-            axios.put('https://todo-react-91a88-default-rtdb.firebaseio.com/users/' + userId + '.json', {
+            axios.put('https://todo-react-91a88-default-rtdb.firebaseio.com/users/' + parsedData['_id'] + '.json', {
                 name: values.name,
                 profile_picture: values.image,
-                email: userDetails.email
+                email: userDetails.email,
+                _id : parsedData['_id']
             }).then((res) => {
-                console.log(res);
-
                 alert('Data is updated successfully.');
                 
                 let updatedUserDetails = {
                     name: values.name,
                     profile_picture: values.image,
-                    email: userDetails.email
+                    email: userDetails.email,
+                    _id : parsedData['_id']
                 };
-
-                console.log(updatedUserDetails);
-
                 localStorage.setItem('userDetails',JSON.stringify(updatedUserDetails));
                 // getData();
                 window.location.reload();
             }).catch((error) => {
-                console.log(error);
+                  
             });
         }).catch((error) => {
-            console.log(error);
+              
         })
-
-
-
-        // axios.put('https://todo-react-91a88-default-rtdb.firebaseio.com/users.json?orderBy="email"&equalTo=' + email, {
-        //     name : values.name,
-        //     profile_picture : values.profile_picture
-        // }).then((res) => {
-        //     console.log(res);
-        // }).catch((error)    =>  {
-        //     console.log(error);
-        // })
 
 
     }
@@ -83,7 +67,7 @@ function MyProfile() {
                 </Form.Group>
 
                 {
-                    errors.name && <h3>{errors.name}</h3>
+                    errors.name && <h3 className='error'>{errors.name}</h3>
                 }
 
                 <Form.Group className="mb-3" controlId="formGroupImage" >
@@ -92,7 +76,7 @@ function MyProfile() {
                 </Form.Group>
 
                 {
-                    errors.image && <h3>{errors.image}</h3>
+                    errors.image && <h3 className='error'>{errors.image}</h3>
                 }
 
                 <Button onClick={handleSubmit}>

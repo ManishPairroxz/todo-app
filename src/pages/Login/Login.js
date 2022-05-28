@@ -19,44 +19,47 @@ function Login() {
     const history = useHistory();
 
     async function login() {
+          
          
-
         try {
+              
+
             const result = await signInWithEmailAndPassword(
                 auth,
                 values.email,
                 values.password
-            );
+            ).then((res) => {
+                console.log(res);
+            }).catch((error) => {
+                console.log(error);
+                console.log(error.toString().replace('FirebaseError: Firebase: ',''))
+                console.dir(error);
+                alert(error.toString().replace('FirebaseError: Firebase: ',''));
+            })
 
-             
+            auth.beforeAuthStateChanged((user) => {
+                console.log(user)
+            })
+
+            auth.
+
+            console.log(auth.currentUser)
+
             const email = `${'"' + values.email + '"'}`;
-             
-
             axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/users.json?orderBy="email"&equalTo=' + email).then((res) => {
-                
-
                 let data = Object.entries(res.data);
-
-                 
-                 
+                console.log(data);
                 
-
-                // res.data.forEach((element, key) => {
-                //      
-                // })
-
                 localStorage.setItem('userDetails', JSON.stringify(data[0][1]));
             }).catch((errors) => {
-                 
+                
             })
 
             localStorage.setItem('accessToken', result.user.accessToken);
             localStorage.setItem('userDetails', JSON.stringify(values));
 
             alert('Login is successfull.');
-
             redirectToTasks();
-
         } catch (error) {
 
         }
@@ -75,7 +78,7 @@ function Login() {
                 </Form.Group>
 
                 {
-                    errors.email && <h3>{errors.email}</h3>
+                    errors.email && <h3 className='error'>{errors.email}</h3>
                 }
 
                 <Form.Group className="mb-3" controlId="formGroupPassword">
@@ -84,7 +87,7 @@ function Login() {
                 </Form.Group>
 
                 {
-                    errors.password && <h3>{errors.password}</h3>
+                    errors.password && <h3 className='error'>{errors.password}</h3>
                 }
 
                 <Button type='submit' variant="primary" onClick={handleSubmit}>Submit</Button>

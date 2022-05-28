@@ -21,26 +21,36 @@ function Register() {
     } = useForm(register, validate);
 
     async function register() {
+          
          
         try {
             const result = await createUserWithEmailAndPassword(
                 auth,
                 values.email,
                 values.password
-            );             
+            );    
+            
+              
 
             axios.post('https://todo-react-91a88-default-rtdb.firebaseio.com/users.json', {
                 name : values.name,
                 email : values.email,
-                profile_picture : ''
+                profile_picture : '',
+                _id : Math.floor(Math.random() * 10000)
             }).then((res)   =>  {
-                 
+                   
             }).catch((error)    =>  {
-                 
+                 alert(error.errors.message);
             });
 
+            const userDetails = {
+                name : values.name,
+                email : values.email,
+                profile_picture : '',
+                _id : Math.floor(Math.random() * 10000)
+            }
             localStorage.setItem('accessToken', result.user.accessToken);
-            localStorage.setItem('userDetails', JSON.stringify(values));
+            localStorage.setItem('userDetails', JSON.stringify(userDetails));
 
             alert('Signup is successfull.');
 
@@ -64,7 +74,7 @@ function Register() {
                 </Form.Group>
 
                 {
-                    errors.name && <h3>Name is required.</h3>
+                    errors.name && <h3 className='error'>Name is required.</h3>
                 }
 
                 <Form.Group className="mb-3" controlId="formGroupEmail">
@@ -73,7 +83,7 @@ function Register() {
                 </Form.Group>
 
                 {
-                    errors.email && <h3>{errors.email}</h3>
+                    errors.email && <h3 className='error'>{errors.email}</h3>
                 }
                 <Form.Group className="mb-3" controlId="formGroupPassword">
                     <Form.Label>Password</Form.Label>
@@ -81,7 +91,7 @@ function Register() {
                 </Form.Group>
 
                 {
-                    errors.password && <h3>{errors.password}</h3>
+                    errors.password && <h3 className='error'>{errors.password}</h3>
                 }
                 <Form.Group className="mb-3" controlId="formGroupConfirmPassword">
                     <Form.Label>Confirm Password</Form.Label>
@@ -89,7 +99,7 @@ function Register() {
                 </Form.Group>
 
                 {
-                    errors.confirmPassword && <h3>{errors.confirmPassword}</h3>
+                    errors.confirmPassword && <h3 className='error'>{errors.confirmPassword}</h3>
                 }
 
                 <Button variant="primary" onClick={handleSubmit}>Submit</Button>

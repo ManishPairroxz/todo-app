@@ -9,7 +9,7 @@ const useForm = (callback, validate) => {
 
   useEffect(() => {
     if (callback['name'] == 'profileSubmit' && !isSubmitting) {
-      console.log('i am inside the useEffect MyProfile');
+        
 
       // set the initial data here.
       getData();
@@ -21,7 +21,7 @@ const useForm = (callback, validate) => {
 
   let userDetails = JSON.parse(localStorage.getItem('userDetails'));
 
-  const email = `${'"' + userDetails.email + '"'}`;
+  const email = `${'"' + userDetails?.email + '"'}`;
 
   function getData() {
     axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/users.json?orderBy="email"&equalTo=' + email)
@@ -41,7 +41,7 @@ const useForm = (callback, validate) => {
         // values.image = userDetails.profile_picture;
 
       }).catch((error) => {
-        console.log(error);
+          
       })
   }
 
@@ -53,11 +53,11 @@ const useForm = (callback, validate) => {
   };
 
   const handleChange = (event) => {
-    console.log(event);
-    console.log(event.target);
-    console.log(event.target.name);
+      
+      
+      
     if(event.target.name != 'startDate' && event.target.name != 'dueDate')  {
-      console.log('startDate is not defned');
+        
       event.persist();
     }
 

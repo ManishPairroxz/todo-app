@@ -8,8 +8,11 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../Others/firebase';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
+import Loader from "react-loader-spinner";
+import { useState } from 'react';
 
 function Login() {
+    const [loading, setLoading] = useState(false)
     const {
         values,
         errors,
@@ -19,10 +22,11 @@ function Login() {
     const history = useHistory();
 
     async function login() {
-          
-         
+        setLoading(true);
+
+        console.log('login');
         try {
-              
+            console.log('loader123')
 
             const result = await signInWithEmailAndPassword(
                 auth,
@@ -30,36 +34,34 @@ function Login() {
                 values.password
             ).then((res) => {
                 console.log(res);
+                
+                setTimeout(() => {
+                    setLoading(false);
+                    redirectToTasks();
+                }, 1000);
+
             }).catch((error) => {
+                setLoading(false);
                 console.log(error);
-                console.log(error.toString().replace('FirebaseError: Firebase: ',''))
+                console.log(error.toString().replace('FirebaseError: Firebase: ', ''))
                 console.dir(error);
-                alert(error.toString().replace('FirebaseError: Firebase: ',''));
+                alert(error.toString().replace('FirebaseError: Firebase: ', ''));
             })
-
-            auth.beforeAuthStateChanged((user) => {
-                console.log(user)
-            })
-
-            auth.
-
-            console.log(auth.currentUser)
 
             const email = `${'"' + values.email + '"'}`;
             axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/users.json?orderBy="email"&equalTo=' + email).then((res) => {
                 let data = Object.entries(res.data);
                 console.log(data);
-                
+
                 localStorage.setItem('userDetails', JSON.stringify(data[0][1]));
             }).catch((errors) => {
-                
+
             })
 
             localStorage.setItem('accessToken', result.user.accessToken);
             localStorage.setItem('userDetails', JSON.stringify(values));
 
             alert('Login is successfull.');
-            redirectToTasks();
         } catch (error) {
 
         }
@@ -69,9 +71,11 @@ function Login() {
         history.push('tasks');
     }
 
+
     return (
+
         <div>
-            <Form className="form">
+            {!loading ? <Form className="form">
                 <Form.Group className="mb-3" controlId="formGroupEmail">
                     <Form.Label>Email</Form.Label>
                     <Form.Control name="email" type="email" placeholder="Email" onChange={handleChange} value={values.email} required />
@@ -96,7 +100,17 @@ function Login() {
                     <Form.Label>New user? <Link to="/register">Register</Link> </Form.Label>
 
                 </div>
-            </Form>
+
+            </Form> : <Loader
+                type="Puff"
+
+                className="center-laoder"
+                color="#00BFFF"
+                height={100}
+                width={100}
+                timeout={3000} //3 secs
+            />}
+
         </div>
     );
 }

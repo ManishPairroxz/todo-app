@@ -26,6 +26,8 @@ function Tasks() {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const [loading, setLoading] = useState(false);
+    const [deleteShow, setDeleteShow] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(false);
 
 
     useEffect(() => {
@@ -68,6 +70,41 @@ function Tasks() {
         setDate(date);
     }
 
+    function handleDeleteClose(event, option) {
+        console.log(event)
+        console.log(option);
+        console.log(itemToDelete);
+
+        if (option == 'yes') {
+            setDeleteShow(false);
+            // https://[PROJECT_ID].firebaseio.com/locations/{{id}}.json
+
+            // Find the tasks
+            axios.get('https://todo-react-91a88-default-rtdb.firebaseio.com/tasks.json?orderBy="_id"&equalTo=' + itemToDelete._id).then((res) => {
+                console.log(res);
+
+                let object = Object.entries(res['data']);
+                console.log(object);
+                console.log(object[0][0]);
+
+
+                axios.delete('https://todo-react-91a88-default-rtdb.firebaseio.com/tasks/'+ object[0][0] + '.json').then((res) => {
+                    console.log(res);
+                    window.location.reload();
+                }).catch((error)    =>  {
+                    console.log(error);
+                    alert(error.toString().replace('FirebaseError: Firebase: ', ''));
+
+                });
+
+            }).catch((error) => {
+                console.log(error);
+            })
+        } else if (option == 'no')  {
+            setDeleteShow(false);
+        }
+    }
+
     function handleDueDateChange(date, event) {
         const newEvent = {
             target: {
@@ -79,11 +116,7 @@ function Tasks() {
         setDueDate(date);
     }
 
-    function handleEdit(event) {
-        console.log(event);
-    }
-
-    function handleDelete(event)    {
+    function handleEdit(event, item) {
         console.log(event);
     }
 
@@ -101,7 +134,8 @@ function Tasks() {
             priority: values.priority,
             startDate: values.startDate,
             dueDate: values.dueDate,
-            userId: userDetails._id
+            userId: userDetails._id,
+            _id: Math.floor(Math.random() * 10000)
         }).then((res) => {
             setLoading(false);
             handleClose();
@@ -111,7 +145,6 @@ function Tasks() {
         }).catch((error) => {
             setLoading(false);
             alert(error.errors.message);
-
         });
     }
 
@@ -138,7 +171,6 @@ function Tasks() {
 
                                 <tbody>
                                     {
-                                        //   
                                         tasks.map((element) => {
                                             return (
                                                 <tr>
@@ -147,13 +179,15 @@ function Tasks() {
                                                     <td>{element.priority}</td>
                                                     <td>{moment(element.startDate).format('DD/MM/YYYY')}</td>
                                                     <td>{moment(element.dueDate).format('DD/MM/YYYY')}</td>
-                                                    <td><button className='btn btn-primary edit-button' onClick={(event) => handleEdit(event)}>Edit</button></td>
-                                                    <td><button className='btn btn-danger   edit-button'onClick={(event) => handleDelete(event)}>Delete</button></td>
+                                                    <td><button className='btn btn-primary edit-button' onClick={(event) => handleEdit(event, element)}>Edit</button></td>
+                                                    <td><button className='btn btn-danger   edit-button' onClick={() => { setDeleteShow(true); setItemToDelete(element); }}>Delete</button></td>
                                                 </tr>);
 
                                         })}
                                 </tbody>
-                            </Table></><Modal show={show} onHide={handleClose}>
+                            </Table>
+                            </>
+                                <Modal show={show} onHide={handleClose}>
                                     <Modal.Header closeButton>
                                         <Modal.Title>Add a Task</Modal.Title>
                                     </Modal.Header>
@@ -216,14 +250,31 @@ function Tasks() {
 
                                             {errors.dueDate && <h3 className='error'>{errors.dueDate}</h3>}
 
-
                                             <Button variant="primary" type="submit" onClick={handleSubmit}>
                                                 Submit
                                             </Button>
 
                                         </Form>
                                     </Modal.Body>
-                                </Modal></>
+                                </Modal>
+
+                                {/* Delete confirmation modal */}
+                                <Modal show={deleteShow} onHide={handleDeleteClose}>
+                                    <Modal.Header deleteCloseButton>
+                                        <Modal.Title>Delete a Task</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>Are you sure you want to delete this Task?</Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="primary" onClick={(event) => handleDeleteClose(event, 'yes')}>
+                                            Yes
+                                        </Button>
+                                        <Button variant="secondary" onClick={(event) => handleDeleteClose(event, 'no')}>
+                                            No
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                                {/* Delete confirmation modal */}
+                            </>
                             : <Loader
                                 type="Puff"
                                 className="center-laoder"
@@ -233,10 +284,7 @@ function Tasks() {
                                 timeout={3000} //3 secs
                             />
                     }
-
                 </>
-
-
             }
 
         </div>
